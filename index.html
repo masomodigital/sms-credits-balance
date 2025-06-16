@@ -5,76 +5,230 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>User Lookup</title>
   <style>
-    /* Your existing styles here */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 2em;
-      max-width: 400px;
-      margin: auto;
-      background: #f9f9f9;
-      color: #333;
-      position: relative;
-      min-height: 600px; /* make space for ticker */
-    }
-    /* ... all your existing styles ... */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-    /* New styles for the fading ticker */
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: #222;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem 6rem; /* bottom padding for ticker */
+    }
+    main {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+      max-width: 400px;
+      width: 100%;
+      padding: 2.5rem 2rem 3rem;
+      box-sizing: border-box;
+      text-align: center;
+      animation: fadeIn 0.8s ease forwards;
+    }
+    h2 {
+      margin-top: 0;
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      text-align: left;
+      font-size: 1.05rem;
+      color: #444;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 1.8px solid #ccc;
+      transition: border-color 0.3s ease;
+      font-weight: 500;
+      outline-offset: 2px;
+      outline-color: transparent;
+      box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.05);
+      font-family: 'Inter', monospace, monospace;
+    }
+    input[type="text"]:focus {
+      border-color: #2575fc;
+      outline-color: #2575fc;
+      box-shadow: 0 0 8px #2575fcaa;
+    }
+    button {
+      margin-top: 1.8rem;
+      background-color: #2575fc;
+      border: none;
+      border-radius: 14px;
+      color: white;
+      padding: 0.9rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 12px rgb(37 117 252 / 0.55);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #1a4ccc;
+      box-shadow: 0 8px 18px rgb(26 76 204 / 0.75);
+    }
+    button:active {
+      background-color: #153c9c;
+      box-shadow: 0 4px 9px rgb(21 60 156 / 0.9);
+    }
+    .message {
+      margin-top: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      min-height: 1.2rem;
+      color: #e03e3e;
+      user-select: none;
+    }
+    .result {
+      margin-top: 2rem;
+      background: #f9faff;
+      padding: 1.5rem 1.8rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 15px rgb(37 117 252 / 0.25);
+      display: none;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .label {
+      font-weight: 700;
+      margin-right: 0.4em;
+      color: #444;
+    }
+    .credits {
+      color: #d32f2f;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.03em;
+    }
+    input.copyable {
+      border: none;
+      background: #e9f5ff;
+      padding: 0.4em 0.7em;
+      font-family: monospace, 'Inter', monospace;
+      font-size: 1rem;
+      width: auto;
+      cursor: pointer;
+      user-select: all;
+      border-radius: 8px;
+      color: #2575fc;
+      font-weight: 600;
+      box-shadow: inset 0 0 5px #b6d0fe;
+      transition: background-color 0.3s ease;
+    }
+    input.copyable:hover {
+      background-color: #d4e4ff;
+    }
+    .copy-button {
+      margin-left: 0.6em;
+      padding: 0.35em 0.8em;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background: #2575fc;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgb(37 117 252 / 0.7);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .copy-button:hover {
+      background-color: #1a4ccc;
+      box-shadow: 0 6px 15px rgb(26 76 204 / 0.9);
+    }
+    .copy-button:active {
+      background-color: #153c9c;
+      box-shadow: 0 3px 8px rgb(21 60 156 / 1);
+    }
+
+    /* Fading ticker styles updated */
     #ticker {
       position: fixed;
-      bottom: 10px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       width: 90%;
-      max-width: 400px;
-      background: #222;
-      color: #eee;
-      padding: 0.8em 1em;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 1em;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      max-width: 420px;
+      background: linear-gradient(90deg, #2575fccc, #6a11cbcc);
+      color: #fff;
+      padding: 1em 1.2em;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      box-shadow: 0 10px 30px rgba(106,17,203,0.7);
       text-align: center;
       opacity: 0;
       transition: opacity 1s ease-in-out;
       pointer-events: none;
       user-select: none;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       z-index: 9999;
-      min-height: 24px;
+      min-height: 28px;
+      letter-spacing: 0.04em;
     }
     #ticker.visible {
       opacity: 1;
       pointer-events: auto;
     }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
   </style>
 </head>
 <body>
 
-  <h2>User Lookup by National ID</h2>
+  <main>
+    <h2>User Lookup by National ID</h2>
 
-  <label for="nationalId">Enter National ID</label>
-  <input type="text" id="nationalId" placeholder="e.g. 12345678" />
-  <button id="lookupBtn">Lookup</button>
+    <label for="nationalId">Enter National ID</label>
+    <input type="text" id="nationalId" placeholder="e.g. 12345678" />
+    <button id="lookupBtn" aria-label="Lookup user by National ID">Lookup</button>
 
-  <div class="message" id="message"></div>
+    <div class="message" id="message" role="alert" aria-live="polite" aria-atomic="true"></div>
 
-  <div class="result" id="result" style="display:none;">
-    <p><span class="label">Name:</span><span id="name"></span></p>
-    <p><span class="label">Phone Number:</span><span id="phone"></span></p>
-    <p>
-      <span class="label">Promo Code:</span>
-      <input type="text" id="promoCode" class="copyable" readonly />
-      <button class="copy-button" id="copyBtn">Copy</button>
-    </p>
-    <p><span class="label">Earnings:</span><span id="earnings"></span></p>
-    <p><span class="label">Credits:</span><span id="credits" class="credits"></span></p>
-  </div>
+    <div class="result" id="result" aria-live="polite" aria-atomic="true">
+      <p><span class="label">Name:</span><span id="name"></span></p>
+      <p><span class="label">Phone Number:</span><span id="phone"></span></p>
+      <p>
+        <span class="label">Promo Code:</span>
+        <input type="text" id="promoCode" class="copyable" readonly aria-label="Promo Code" />
+        <button class="copy-button" id="copyBtn" aria-label="Copy promo code">Copy</button>
+      </p>
+      <p><span class="label">Earnings:</span><span id="earnings"></span></p>
+      <p><span class="label">Credits:</span><span id="credits" class="credits"></span></p>
+    </div>
+  </main>
 
-  <!-- New ticker div -->
+  <!-- Ticker -->
   <div id="ticker" aria-live="polite" aria-atomic="true"></div>
 
   <script>
-    // Your existing lookup and copy scripts (untouched)
+    // Your existing scripts (lookup, copy, ticker)
+
     const lookupBtn = document.getElementById('lookupBtn');
     const messageDiv = document.getElementById('message');
     const resultDiv = document.getElementById('result');
@@ -93,12 +247,12 @@
       resultDiv.style.display = 'none';
 
       if (!nationalId) {
-        messageDiv.style.color = 'red';
+        messageDiv.style.color = '#e03e3e';
         messageDiv.textContent = 'Please enter a National ID.';
         return;
       }
 
-      messageDiv.style.color = 'black';
+      messageDiv.style.color = '#222';
       messageDiv.textContent = 'Looking up...';
 
       fetch(`${SCRIPT_URL}?nationalId=${encodeURIComponent(nationalId)}`)
@@ -114,15 +268,15 @@
             resultDiv.style.display = 'block';
             messageDiv.textContent = '';
           } else if (data.status === 'not_found') {
-            messageDiv.style.color = 'red';
+            messageDiv.style.color = '#e03e3e';
             messageDiv.textContent = 'User not found.';
           } else {
-            messageDiv.style.color = 'red';
+            messageDiv.style.color = '#e03e3e';
             messageDiv.textContent = data.message || 'Error occurred.';
           }
         })
         .catch(err => {
-          messageDiv.style.color = 'red';
+          messageDiv.style.color = '#e03e3e';
           messageDiv.textContent = 'Failed to fetch data. Check your connection.';
           console.error(err);
         });
@@ -140,20 +294,17 @@
 
     const ticker = document.getElementById('ticker');
 
-    // Sample first names
     const names = [
       "Patrick", "Julius", "Daniel", "Mary", "Brian", "Esther",
       "Grace", "Kevin", "Faith", "James", "Lucy", "Michael",
       "Paul", "Susan", "John", "Rachel", "David", "Alice"
     ];
 
-    // Safaricom prefixes
     const prefixes = [
       "0721", "0722", "0723", "0724", "0725", "0726", "0727", "0728", "0729",
       "0710", "0711", "0712", "0713", "0714"
     ];
 
-    // Time phrases - ensure unique usage before cycling
     const timePhrases = [
       "just now", "an hour ago", "two hours ago", "three hours ago",
       "four hours ago", "five hours ago", "six hours ago", "seven hours ago",
@@ -170,15 +321,12 @@
       return prefixes[Math.floor(Math.random() * prefixes.length)];
     }
 
-    // Mask phone number like 0724xxxxx8
     function getRandomMaskedNumber() {
       const prefix = getRandomPrefix();
-      // Random last digit 0-9
       const lastDigit = Math.floor(Math.random() * 10);
       return prefix + "xxxxx" + lastDigit;
     }
 
-    // Random amount between 300 and 3000, two decimals
     function getRandomAmount() {
       return (Math.floor(Math.random() * (3000 - 300 + 1)) + 300).toFixed(2);
     }
@@ -195,7 +343,6 @@
       return timePhrases[idx];
     }
 
-    // Compose message string
     function composeMessage() {
       const name = getRandomName();
       const amount = getRandomAmount();
@@ -204,18 +351,15 @@
       return `${name} has just received Ksh.${amount} via MPESA number ${number} ${time}!`;
     }
 
-    // Show message with fade in/out effect
     function showNextMessage() {
       const msg = composeMessage();
       ticker.classList.remove('visible');
-      // fade out
       setTimeout(() => {
         ticker.textContent = msg;
         ticker.classList.add('visible');
       }, 1000);
     }
 
-    // Start the ticker loop
     function startTicker() {
       showNextMessage();
       setInterval(() => {
@@ -223,13 +367,11 @@
         setTimeout(() => {
           showNextMessage();
         }, 1000);
-      }, 6000); // 6 seconds per message visible
+      }, 6000);
     }
 
-    // Run ticker on page load
     window.addEventListener('load', startTicker);
 
   </script>
-
 </body>
 </html>
